@@ -128,12 +128,13 @@
                 Local Mode
             </div>
 
-            <div id="security-hook-badge" class="flex items-center gap-1 text-[10px] bg-amber-50 text-amber-600 border border-amber-100 font-bold px-3 py-1.5 rounded-full font-display">
-                <i class="ph ph-shield-warning text-sm"></i> KEY TRIGGER SECURED
+            <div id="security-hook-badge" class="flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 font-bold px-3 py-1.5 rounded-full font-display">
+                <i class="ph ph-shield-check text-sm"></i> SYSTEM SECURED
             </div>
 
-            <button id="btn-login" onclick="toggleAdminMode()" disabled class="px-5 py-2.5 text-sm font-bold tracking-wide font-display transition-all bg-slate-100 text-slate-400 cursor-not-allowed opacity-50 border border-slate-200 rounded-2xl flex items-center gap-2">
-                <i class="ph-fill ph-lock-keyhole text-base"></i> Locked Admin
+            <!-- UNLOCKED BY DEFAULT FOR MOBILE ACCESS -->
+            <button id="btn-login" onclick="toggleAdminMode()" class="px-5 py-2.5 text-sm font-bold tracking-wide font-display transition-all bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white cursor-pointer border border-transparent rounded-2xl flex items-center gap-2 shadow-md shadow-purple-500/10 hover:shadow-lg active:scale-95">
+                <i class="ph-fill ph-lock-keyhole-open text-base animate-pulse"></i> Access Login
             </button>
         </div>
     </nav>
@@ -254,7 +255,7 @@
                             <div id="razorpay-fields" class="space-y-4">
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider font-display">API Key ID</label>
-                                    <input type="text" id="rzp-key" class="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 text-slate-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all rounded-2xl text-sm" placeholder="rzp_test_xxxx">
+                                    <input type="text" id="rzp-key" class="w-full px-4 py-3 bg-purple-50/50 border border-purple-100 text-slate-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all rounded-2xl text-sm" placeholder="rzp_test_Sz1tkW7kLkctzh">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider font-display">Merchant Brand Name</label>
@@ -472,7 +473,7 @@
                 name: 'LibraPay Central Org',
                 bank: 'Metropolitan Standard Bank',
                 accountNumber: 'US-99-876-543-210',
-                razorpayKey: 'rzp_test_tG0vQYV1DExmH7',
+                razorpayKey: 'rzp_test_Sz1tkW7kLkctzh', // Updated Razorpay ID as requested
                 merchantName: 'LibraPay Curators'
             },
             books: [],
@@ -485,8 +486,6 @@
             { id: '3', title: 'Clean Code', author: 'Robert C. Martin', price: 34.00, icon: 'ph-fill ph-broom', color: 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-100', accent: 'from-fuchsia-500 to-pink-500' },
             { id: '4', title: 'Structure and Interpretation of Computer Programs', author: 'Harold Abelson', price: 55.00, icon: 'ph-fill ph-atom', color: 'bg-cyan-50 text-cyan-600 border-cyan-100', accent: 'from-cyan-500 to-blue-500' }
         ];
-
-        let inputSequenceBuffer = "";
 
         function applySelectedAppFont() {
             const value = document.getElementById('app-font-select').value;
@@ -504,48 +503,7 @@
             localStorage.setItem('librapay_app_font', value);
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key.length === 1) {
-                inputSequenceBuffer += e.key.toLowerCase();
-                if (inputSequenceBuffer.length > 30) inputSequenceBuffer = inputSequenceBuffer.slice(-30);
-                if (inputSequenceBuffer.endsWith("suhail")) enableLoginSystem();
-                if (inputSequenceBuffer.endsWith("cut")) disableLoginSystem();
-            }
-        });
-
-        function enableLoginSystem() {
-            const loginBtn = document.getElementById('btn-login');
-            const securityBadge = document.getElementById('security-hook-badge');
-            
-            loginBtn.removeAttribute('disabled');
-            loginBtn.className = "px-5 py-2.5 text-sm font-bold tracking-wide font-display transition-all bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white cursor-pointer border border-transparent rounded-2xl flex items-center gap-2 shadow-md shadow-purple-500/10 hover:shadow-lg active:scale-95";
-            loginBtn.innerHTML = `<i class="ph-fill ph-lock-keyhole-open text-base animate-pulse"></i> Access Login`;
-            
-            securityBadge.className = "flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 font-bold px-3 py-1.5 rounded-full font-display";
-            securityBadge.innerHTML = `<i class="ph ph-shield-check text-sm animate-bounce"></i> SECURED TRIGGER ACTIVE`;
-            
-            showToast('Security Hook unlocked! "suhail" typed.', 'success');
-        }
-
-        function disableLoginSystem() {
-            const loginBtn = document.getElementById('btn-login');
-            const securityBadge = document.getElementById('security-hook-badge');
-            
-            loginBtn.setAttribute('disabled', 'true');
-            loginBtn.className = "px-5 py-2.5 text-sm font-bold tracking-wide font-display transition-all bg-slate-100 text-slate-400 cursor-not-allowed opacity-50 border border-slate-200 rounded-2xl flex items-center gap-2";
-            loginBtn.innerHTML = `<i class="ph-fill ph-lock-keyhole text-base"></i> Locked Admin`;
-            
-            securityBadge.className = "flex items-center gap-1 text-[10px] bg-amber-50 text-amber-600 border border-amber-100 font-bold px-3 py-1.5 rounded-full font-display";
-            securityBadge.innerHTML = `<i class="ph ph-shield-warning text-sm"></i> KEY TRIGGER SECURED`;
-            
-            if (isAdminLoggedIn) {
-                logoutAdminFlow();
-                showToast('Logged out & locked admin core via security override.', 'info');
-            } else {
-                showToast('Login triggers lock re-applied via "cut" command.', 'info');
-            }
-        }
-
+        // Disabled hidden key trigger sequence entirely to support Mobile natively
         function toggleAdminMode() {
             if (isAdminLoggedIn) logoutAdminFlow();
             else openAuthModal();
@@ -554,9 +512,7 @@
         function logoutAdminFlow() {
             isAdminLoggedIn = false;
             const loginBtn = document.getElementById('btn-login');
-            if (loginBtn.getAttribute('disabled') !== 'true') {
-                loginBtn.innerHTML = `<i class="ph-fill ph-lock-keyhole-open text-base"></i> Access Login`;
-            }
+            loginBtn.innerHTML = `<i class="ph-fill ph-lock-keyhole-open text-base animate-pulse"></i> Access Login`;
             document.getElementById('user-view').classList.remove('hidden');
             document.getElementById('admin-view').classList.add('hidden');
             showToast('Admin logged out successfully.', 'info');
@@ -614,7 +570,13 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             const cachedAdmin = localStorage.getItem('librapay_lite_admin');
-            if (cachedAdmin) state.adminAccount = JSON.parse(cachedAdmin);
+            if (cachedAdmin) {
+                state.adminAccount = JSON.parse(cachedAdmin);
+                // Ensure users who have the old token cached receive the new default Razorpay key
+                if (state.adminAccount.razorpayKey === 'rzp_test_tG0vQYV1DExmH7') {
+                    state.adminAccount.razorpayKey = 'rzp_test_Sz1tkW7kLkctzh';
+                }
+            }
 
             const cachedFont = localStorage.getItem('librapay_app_font') || 'plus';
             document.getElementById('app-font-select').value = cachedFont;
@@ -889,7 +851,7 @@
                     showToast('Merchant key unconfigured.', 'error');
                     return;
                 }
-                if (typeof Razorpay === 'undefined') {
+                if (typeof window.Razorpay === 'undefined') {
                     openBankModal(book);
                     showToast('Razorpay SDK unavailable. Using bank transfer fallback.', 'error');
                     return;
@@ -905,11 +867,12 @@
         }
 
         function openRazorpayCheckout(book) {
+            // Converts the price safely to smaller unit limit for the payment gateway (INR Paise)
             const apiAmount = Math.max(1, Math.round(Number(book.price) * 100));
             const gatewayOptions = {
                 key: state.adminAccount.razorpayKey,
                 amount: apiAmount,
-                currency: "INR",
+                currency: "INR", 
                 name: state.adminAccount.merchantName || "LibraPay Core",
                 description: `Acquisition: ${book.title}`,
                 image: "https://placehold.co/128x128/7c3aed/ffffff?text=LibraPay",
@@ -924,7 +887,7 @@
             };
 
             try {
-                const rzpHandler = new Razorpay(gatewayOptions);
+                const rzpHandler = new window.Razorpay(gatewayOptions);
                 rzpHandler.on('payment.failed', function (res) {
                     showToast(`Transaction Failed: ${res.error.description}`, 'error');
                 });
